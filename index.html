@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Beer Pong HQ</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="style.css" />
+    <script type="module" src="app.js"></script>
+  </head>
+  <body>
+    <div class="app-shell">
+      <header class="app-header">
+        <div class="brand">
+          <!-- <p class="eyebrow">Beer Pong HQ</p> -->
+          <h1>Beer pong HQ</h1>
+        </div>
+        <nav class="app-nav">
+          <button class="nav-btn active" data-view="players">Players</button>
+          <button class="nav-btn" data-view="duel">1v1 match</button>
+          <button class="nav-btn" data-view="doubles">2v2 match</button>
+          <button class="nav-btn" data-view="tournament">Tournament</button>
+          <button class="nav-btn" data-view="history">Previous events</button>
+        </nav>
+      </header>
+
+      <main class="app-main">
+        <section id="view-players" class="view active">
+          <div class="panel">
+            <div class="panel-header">
+              <div>
+                <h2>Players</h2>
+              </div>
+            </div>
+            <ul id="player-list" class="player-list"></ul>
+            <form id="player-form" class="stack sm">
+              <label for="player-name">Create player</label>
+              <div class="inline">
+                <input id="player-name" type="text" maxlength="40" />
+                <button type="submit" class="primary">Add</button>
+              </div>
+              <p class="hint">Names must be unique.</p>
+            </form>
+          </div>
+        </section>
+
+        <section id="view-doubles" class="view">
+          <div class="panel">
+            <h2>2v2 match</h2>
+            <form id="doubles-form" class="stack">
+              <div class="doubles-match">
+                <div class="team-column">
+                  <h3>Team A</h3>
+                  <div class="team-row">
+                    <select id="doubles-player-a1"></select>
+                    <div class="score-row">
+                      <span class="score-label">Cups</span>
+                      <select id="doubles-score-a1" class="score-select">
+                        <option value="unknown">?</option>
+                        <option value="0">0</option>
+                        <option value="1">1</option>
+                        <option value="2">2</option>
+                        <option value="3">3</option>
+                        <option value="4">4</option>
+                        <option value="5">5</option>
+                        <option value="6">6</option>
+                        <option value="7">7</option>
+                        <option value="8">8</option>
+                        <option value="9">9</option>
+                        <option value="10">10</option>
+                      </select>
+                    </div>
+                  </div>
+                  <div class="team-row">
+                    <select id="doubles-player-a2"></select>
+                    <div class="score-row">
+                      <span class="score-label">Cups</span>
+                      <select id="doubles-score-a2" class="score-select">
+                        <option value="unknown">?</option>
+                        <option value="0">0</option>
+                        <option value="1">1</option>
+                        <option value="2">2</option>
+                        <option value="3">3</option>
+                        <option value="4">4</option>
+                        <option value="5">5</option>
+                        <option value="6">6</option>
+                        <option value="7">7</option>
+                        <option value="8">8</option>
+                        <option value="9">9</option>
+                        <option value="10">10</option>
+                      </select>
+                    </div>
+                  </div>
+                </div>
+                <div class="team-column">
+                  <h3>Team B</h3>
+                  <div class="team-row">
+                    <select id="doubles-player-b1"></select>
+                    <div class="score-row">
+                      <span class="score-label">Cups</span>
+                      <select id="doubles-score-b1" class="score-select">
+                        <option value="unknown">?</option>
+                        <option value="0">0</option>
+                        <option value="1">1</option>
+                        <option value="2">2</option>
+                        <option value="3">3</option>
+                        <option value="4">4</option>
+                        <option value="5">5</option>
+                        <option value="6">6</option>
+                        <option value="7">7</option>
+                        <option value="8">8</option>
+                        <option value="9">9</option>
+                        <option value="10">10</option>
+                      </select>
+                    </div>
+                  </div>
+                  <div class="team-row">
+                    <select id="doubles-player-b2"></select>
+                    <div class="score-row">
+                      <span class="score-label">Cups</span>
+                      <select id="doubles-score-b2" class="score-select">
+                        <option value="unknown">?</option>
+                        <option value="0">0</option>
+                        <option value="1">1</option>
+                        <option value="2">2</option>
+                        <option value="3">3</option>
+                        <option value="4">4</option>
+                        <option value="5">5</option>
+                        <option value="6">6</option>
+                        <option value="7">7</option>
+                        <option value="8">8</option>
+                        <option value="9">9</option>
+                        <option value="10">10</option>
+                      </select>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="inline">
+                <label>Winning team</label>
+                <select id="doubles-winner">
+                  <option value="">Select winner</option>
+                </select>
+              </div>
+              <button type="submit" class="primary">Record match</button>
+              <p class="form-msg" id="doubles-message"></p>
+            </form>
+          </div>
+        </section>
+
+        <section id="view-duel" class="view">
+          <div class="panel">
+            <h2>1v1 match</h2>
+            <form id="duel-form" class="stack">
+              <div class="duel-match">
+                <div class="slot-wrapper duel-slot">
+                  <select id="duel-player-a"></select>
+                  <div class="score-row">
+                    <span class="score-label">Cups</span>
+                    <select id="duel-score-a" class="score-select">
+                      <option value="unknown">?</option>
+                      <option value="0">0</option>
+                      <option value="1">1</option>
+                      <option value="2">2</option>
+                      <option value="3">3</option>
+                      <option value="4">4</option>
+                      <option value="5">5</option>
+                      <option value="6">6</option>
+                      <option value="7">7</option>
+                      <option value="8">8</option>
+                      <option value="9">9</option>
+                      <option value="10">10</option>
+                    </select>
+                  </div>
+                </div>
+                <div class="slot-wrapper duel-slot">
+                  <select id="duel-player-b"></select>
+                  <div class="score-row">
+                    <span class="score-label">Cups</span>
+                    <select id="duel-score-b" class="score-select">
+                      <option value="unknown">?</option>
+                      <option value="0">0</option>
+                      <option value="1">1</option>
+                      <option value="2">2</option>
+                      <option value="3">3</option>
+                      <option value="4">4</option>
+                      <option value="5">5</option>
+                      <option value="6">6</option>
+                      <option value="7">7</option>
+                      <option value="8">8</option>
+                      <option value="9">9</option>
+                      <option value="10">10</option>
+                    </select>
+                  </div>
+                </div>
+              </div>
+              <div class="inline">
+                <label>Winner</label>
+                <select id="duel-winner"></select>
+              </div>
+              <button type="submit" class="primary">Record match</button>
+              <p class="form-msg" id="duel-message"></p>
+            </form>
+          </div>
+        </section>
+
+        <section id="view-tournament" class="view">
+          <div class="panel" id="tournament-builder-panel">
+            <div class="panel-header">
+              <div>
+                <h2>Tournament builder</h2>
+              </div>
+            </div>
+            <div class="stack">
+              <label class="field">
+                <span class="field-label">Bracket type</span>
+                <select id="tournament-bracket-type">
+                  <option value="single">Single elimination</option>
+                  <option value="double" selected>Double elimination</option>
+                </select>
+              </label>
+              <div class="field">
+                <span class="field-label">Match style</span>
+                <div class="toggle-group" id="tournament-style-toggle">
+                  <button type="button" class="toggle-btn active" data-tournament-style="solo">1v1</button>
+                  <button type="button" class="toggle-btn" data-tournament-style="doubles">2v2</button>
+                </div>
+              </div>
+              <label class="field">
+                <span class="field-label">Tournament name</span>
+                <input id="tournament-name" type="text" maxlength="60" />
+              </label>
+              <div id="tournament-player-panel">
+                <div class="select-grid" id="tournament-player-grid"></div>
+              </div>
+              <div id="tournament-seed-panel" class="seed-panel" hidden></div>
+              <div id="tournament-team-panel" class="team-builder" hidden>
+                <div class="team-builder-controls">
+                  <button type="button" class="circle-btn" id="tournament-team-add" aria-label="Add team">+</button>
+                  <button type="button" class="circle-btn" id="tournament-team-remove" aria-label="Remove team">-</button>
+                </div>
+                <div id="tournament-team-list" class="team-card-list"></div>
+              </div>
+            </div>
+            <button class="primary" id="tournament-build">Build bracket</button>
+          </div>
+          <div class="panel bracket-panel">
+            <div class="panel-header">
+              <div>
+                <h3>Bracket</h3>
+              </div>
+              <div class="inline">
+                <button class="ghost small" id="tournament-reset">Reset</button>
+                <button class="primary small" id="tournament-record">Record tournament</button>
+              </div>
+            </div>
+            <div class="champion-card" id="tournament-champion" hidden>
+              <p class="eyebrow small" data-field="champion-label">Champion</p>
+              <h2 data-field="name">Waiting for results…</h2>
+              <p data-field="subtext"></p>
+            </div>
+            <div class="bracket" id="tournament-bracket">
+              <p class="placeholder">Select players and build a bracket to get started.</p>
+            </div>
+          </div>
+        </section>
+
+        <section id="view-history" class="view">
+          <div class="panel history-panel">
+            <div class="history-list" id="history-list"></div>
+            <div class="history-detail" id="history-detail">
+              <p class="placeholder">Select an event to view its details.</p>
+            </div>
+          </div>
+        </section>
+      </main>
+    </div>
+  </body>
+</html>
