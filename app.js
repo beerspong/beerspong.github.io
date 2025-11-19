@@ -75,11 +75,16 @@ class DataStore {
       this.loadLocal();
       return;
     }
-    const playerSnap = await getDocs(collection(this.db, 'players'));
+    const [playerSnap, eventSnap] = await Promise.all([
+      getDocs(collection(this.db, 'players')),
+      getDocs(collection(this.db, 'events')),
+    ]);
     this.players = playerSnap.docs
       .map((docSnap) => ({ id: docSnap.id, ...docSnap.data() }))
       .sort((a, b) => a.name.localeCompare(b.name));
-    this.loadLocalEvents();
+    this.events = eventSnap.docs
+      .map((docSnap) => deserializeEvent({ id: docSnap.id, ...docSnap.data() }))
+      .sort((a, b) => b.createdAt - a.createdAt);
   }
 
   read(key) {
@@ -104,6 +109,7 @@ class DataStore {
   }
 
   persistLocalEvents() {
+    if (!this.useLocal) return;
     try {
       localStorage.setItem(this.eventKey, JSON.stringify(this.events));
     } catch (error) {
@@ -161,11 +167,18 @@ class DataStore {
 
   async addEvent(event) {
     const record = { ...event, createdAt: event.createdAt ?? Date.now() };
-    const saved = record;
-    this.events.push(saved);
+    if (!record.id) {
+      record.id = crypto.randomUUID();
+    }
+    this.events.push(record);
     this.events.sort((a, b) => b.createdAt - a.createdAt);
-    this.persistLocalEvents();
-    return saved;
+    if (this.useLocal) {
+      this.persistLocalEvents();
+    } else if (this.db) {
+      const eventsRef = doc(this.db, 'events', record.id);
+      await setDoc(eventsRef, serializeEvent(record));
+    }
+    return record;
   }
 
   async updateEvent(eventId, updater) {
@@ -173,15 +186,27 @@ class DataStore {
     if (index === -1) return;
     const updated = updater(this.events[index]);
     this.events[index] = updated;
-    this.persistLocalEvents();
+    this.events.sort((a, b) => b.createdAt - a.createdAt);
+    if (this.useLocal) {
+      this.persistLocalEvents();
+    } else if (this.db) {
+      const docRef = doc(this.db, 'events', eventId);
+      await setDoc(docRef, serializeEvent(updated));
+    }
   }
 
   async deleteEvent(event) {
     if (!event) return;
     const eventId = event.id;
     this.events = this.events.filter((entry) => entry.id !== eventId);
-    this.persistLocalEvents();
-    if (!this.useLocal && this.db) {
+    if (this.useLocal) {
+      this.persistLocalEvents();
+    } else if (this.db) {
+      try {
+        await deleteDoc(doc(this.db, 'events', eventId));
+      } catch (error) {
+        console.error('Unable to delete event', error);
+      }
       try {
         const backup = serializeEvent({
           ...event,
@@ -192,6 +217,8 @@ class DataStore {
       } catch (error) {
         console.error('Unable to archive deleted event', error);
       }
+    } else {
+      this.persistLocalEvents();
     }
   }
 
@@ -205,7 +232,17 @@ class DataStore {
       return updated;
     });
     if (!changedEvents.length) return;
-    this.persistLocalEvents();
+    if (this.useLocal) {
+      this.persistLocalEvents();
+      return;
+    }
+    if (!this.db) return;
+    await Promise.all(
+      changedEvents.map((event) => {
+        const docRef = doc(this.db, 'events', event.id);
+        return setDoc(docRef, serializeEvent(event));
+      })
+    );
   }
 }
 
